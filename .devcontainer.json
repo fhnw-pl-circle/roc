@@ -1,0 +1,11 @@
+{
+    "name": "ROC Language",
+    "dockerFile": "Dockerfile",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "IvanDemchenko.roc-lang-unofficial"
+            ]
+        }
+    }
+}
