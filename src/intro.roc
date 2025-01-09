@@ -4,14 +4,23 @@ app [main!] {
 }
 
 import json.Json
+import pf.Http
 import pf.Stdout
+import pf.Arg
 
 # Show basic examples, varibles, functions, arithmetic, etc., debug printing, type annotion, overflow crashes, fractions, Num a
 # assignment, assignment, ..., expression
 
 
-main! = \_args ->
-    Stdout.line! "Hallo Welt"
+main! = \raw_args ->
+    args = List.map raw_args Arg.display
+    arg0 = try List.get args 1
+    url = "https://wttr.in/$(arg0)?format=3"
+    response = try Http.get_utf8! url
+    Stdout.line! response
+    # when response is
+    #     Ok report -> Stdout.line! report
+    #     Err _ ->   Stdout.line! "Error"
 
 # Type annotation
 bricks : Int a
@@ -194,3 +203,22 @@ showColor = \@Color color ->
         Blue -> "Blue"
 
 expect showMe (@Color Red) == "Red"
+
+
+makeAsterisks = \range ->
+    List.range {start: At 1, end:  At range}
+    |> List.map (\x -> Str.repeat "*" x)
+
+expect makeAsterisks 5 == ["*", "**", "***", "****", "*****"]
+
+printAsterisks! = \range ->
+    Stdout.line! (Str.joinWith (makeAsterisks range) "\n")
+
+# With complete purity inference
+# printAsterisks! = \range ->
+#     var totalPrinted_ = 0
+#     for num in range do
+#         str = Str.repeat "*" num
+#         echo! str
+#         totalPrinted_ += 1
+#     totalPrinted_
